@@ -91,9 +91,9 @@ async fn handle_channel(
             .ok_or(anyhow::anyhow!("No node2 policy"))?
     };
 
-    let percentage = channel.local_balance as f64 / channel.capacity as f64 * 100.0;
+    let percentage = channel.remote_balance as f64 / channel.capacity as f64 * 100.0;
     let policy = if percentage > 60_f64 {
-        // high balance
+        // high inbound
         PolicyUpdateRequest {
             base_fee_msat: config.high_fee_base,
             fee_rate_ppm: config.high_fee_ppm,
@@ -103,7 +103,7 @@ async fn handle_channel(
             ..Default::default()
         }
     } else if percentage > 40_f64 {
-        // medium balance
+        // medium inbound
         PolicyUpdateRequest {
             base_fee_msat: config.medium_fee_base,
             fee_rate_ppm: config.medium_fee_ppm,
@@ -113,7 +113,7 @@ async fn handle_channel(
             ..Default::default()
         }
     } else {
-        // low balance
+        // low inbound
         PolicyUpdateRequest {
             base_fee_msat: config.low_fee_base,
             fee_rate_ppm: config.low_fee_ppm,
