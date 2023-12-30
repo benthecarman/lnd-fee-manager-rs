@@ -61,6 +61,11 @@ async fn handle_channel(
     node_id: &str,
     channel: tonic_openssl_lnd::lnrpc::Channel,
 ) -> anyhow::Result<()> {
+    // skip inactive channels
+    if !channel.active {
+        return Ok(());
+    }
+
     let strings = channel.channel_point.split(':').collect::<Vec<_>>();
     let txid = strings[0].to_string();
     let output_index = strings[1].parse::<u32>().unwrap();
